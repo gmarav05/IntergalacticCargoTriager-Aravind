@@ -11,6 +11,7 @@ class CargoHandler(http.server.BaseHTTPRequestHandler):
         if override_header == 'true':
             self.send_response(418, "I'm a teapot")
             self.send_header('Content-Type', 'text/plain; charset=utf-8')
+            self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
             self.wfile.write(b"System override denied.")
             return
@@ -30,6 +31,7 @@ class CargoHandler(http.server.BaseHTTPRequestHandler):
                         data = json.load(f)
                     self.send_response(200)
                     self.send_header('Content-Type', 'application/json; charset=utf-8')
+                    self.send_header('Access-Control-Allow-Origin', '*')
                     self.end_headers()
                     self.wfile.write(json.dumps(data, indent=2, ensure_ascii=False).encode('utf-8'))
                 except Exception as e:
