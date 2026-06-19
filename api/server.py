@@ -6,8 +6,16 @@ PORT = 8000
 
 class CargoHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
+        # 1. Check HTTP header X-System-Override: true (case-insensitive check)
+        override_header = self.headers.get('X-System-Override', '').lower()
+        if override_header == 'true':
+            self.send_response(418, "I'm a teapot")
+            self.send_header('Content-Type', 'text/plain; charset=utf-8')
+            self.end_headers()
+            self.wfile.write(b"System override denied.")
+            return
 
-        # Handle GET /api/cargo endpoint
+        # 2. Check endpoint: GET /api/cargo
         path = self.path.split('?')[0]
         if path == '/api/cargo':
             script_dir = os.path.dirname(os.path.abspath(__file__))
